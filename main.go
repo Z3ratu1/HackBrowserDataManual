@@ -135,7 +135,11 @@ bypass edr monitor of browser data file by using Chromium devtools protocol`,
 			// check if there is browser process
 			killed, err := browserInstance.CheckBrowser(kill)
 			if err != nil {
-				return err
+				if errors.Is(err, &browser.ChromeExistError{}) {
+					log.Infof("Chrome process exist, cookie may cannot be parsed")
+				} else {
+					return err
+				}
 			}
 			if killed {
 				defer browserInstance.RestoreBrowser()

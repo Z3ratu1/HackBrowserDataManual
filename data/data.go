@@ -5,6 +5,7 @@ import (
 	"HackBrowserDataManual/item"
 	"encoding/csv"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/gocarina/gocsv"
 	log "github.com/sirupsen/logrus"
@@ -30,6 +31,9 @@ type Manager struct {
 func (m *Manager) WriteData(b *browser.Browser) error {
 	if m.OutputFileName == "" {
 		m.OutputFileName = fmt.Sprintf("%s_%s_%d.%s", b.GetName(), b.Action, time.Now().Unix(), m.ext())
+	}
+	if m.InnerData == nil {
+		return errors.New("no data to be wrote")
 	}
 	outputFile, err := m.createFile(m.OutputFileName)
 	if err != nil {
