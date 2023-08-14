@@ -50,19 +50,7 @@ bypass edr monitor of browser data file by using Chromium devtools protocol`,
 		Use:   "run",
 		Short: "Parse browser cookie, password and history",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			// 一把梭的情况下输出文件和输入文件名都得留空
-			// 不知道为什么启动的无头浏览器在程序运行过程中不会退出。。虽然我都defer了cancel，不是很懂
-			// 如果程序正常退出的话无头浏览器也会正常退出，可能是哪里处理有问题
-			// 这样子的话就只能先处理cookie，否则存在的无头浏览器会影响cookie的提取
-			err := runE(targetBrowser, item.Cookie, masterKeyFile, "", "", outputFormat, kill)
-			if err != nil {
-				if errors.Is(err, &browser.ChromeExistError{}) {
-					log.Infof(err.Error())
-				} else {
-					return err
-				}
-			}
-			err = runE(targetBrowser, item.Password, masterKeyFile, "", "", outputFormat, kill)
+			err := runE(targetBrowser, item.Password, masterKeyFile, "", "", outputFormat, kill)
 			if err != nil {
 				return err
 			}
@@ -70,7 +58,10 @@ bypass edr monitor of browser data file by using Chromium devtools protocol`,
 			if err != nil {
 				return err
 			}
-
+			err = runE(targetBrowser, item.Cookie, masterKeyFile, "", "", outputFormat, kill)
+			if err != nil {
+				return err
+			}
 			return nil
 		},
 	}
@@ -228,7 +219,11 @@ func runE(targetBrowser string, action string, masterKeyFile string, inputFileNa
 		// check if there is browser process
 		killed, err := browserInstance.CheckBrowser(kill)
 		if err != nil {
-			return err
+			if errors.Is(err, &browser.ChromeExistError{}) {
+				log.Infof("Chrome process exist, cookie may cannot be parsed")
+			} else {
+				return err
+			}
 		}
 		if killed {
 			defer browserInstance.RestoreBrowser()

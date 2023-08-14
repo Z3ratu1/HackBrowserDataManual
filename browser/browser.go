@@ -193,23 +193,6 @@ func (b *Browser) Download(target string) (string, error) {
 	return guid, nil
 }
 
-func (b *Browser) GetKeyAndFile() ([]byte, string, error) {
-	b.InitPath()
-	masterKeyContent, err := b.Read(b.MasterKeyFile)
-	if err != nil {
-		return nil, "", err
-	}
-	tempInputFile, err := b.Download(b.InputFile)
-	if err != nil {
-		return nil, "", err
-	}
-	b.masterKey, err = b.parseMasterKey(masterKeyContent)
-	if err != nil {
-		return nil, "", err
-	}
-	return b.masterKey, tempInputFile, nil
-}
-
 func (b *Browser) GetKey() ([]byte, error) {
 	masterKeyContent, err := b.Read(b.MasterKeyFile)
 	if err != nil {
