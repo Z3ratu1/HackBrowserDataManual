@@ -48,9 +48,9 @@ type Browser struct {
 func (b *Browser) InitPath() {
 	if b.MasterKeyFile == "" && b.Action != item.History {
 		b.MasterKeyFile = b.Util.getUserDir() + item.ChromiumKey
+		b.MasterKeyFile = utils.NormalizePath(b.MasterKeyFile)
+		log.Infof("Key file: %s", b.MasterKeyFile)
 	}
-	b.MasterKeyFile = utils.NormalizePath(b.MasterKeyFile)
-	log.Infof("Key file: %s", b.MasterKeyFile)
 	if b.InputFile == "" {
 		var fileName string
 		switch b.Action {
@@ -194,6 +194,9 @@ func (b *Browser) Download(target string) (string, error) {
 }
 
 func (b *Browser) GetKey() ([]byte, error) {
+	if b.MasterKeyFile == "" {
+		return nil, nil
+	}
 	masterKeyContent, err := b.Read(b.MasterKeyFile)
 	if err != nil {
 		return nil, err
