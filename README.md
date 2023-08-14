@@ -1,7 +1,8 @@
 # HackBrowserDataManual
-偏向手动的浏览器数据还原工具
+HackBrowserData的偏手动版，用于绕过特定情况下edr的限制
 
 魔改自[HackBrowserData](https://github.com/moonD4rk/HackBrowserData)  
+原理部分查看我的这篇博客[HackBrowserDataManual开发日记](https://blog.z3ratu1.top/HackBrowserDataManual%E5%BC%80%E5%8F%91%E6%97%A5%E8%AE%B0.html)
 用于应对特殊情况下edr等软件监控了chrome的数据文件导致无法还原密码的问题  
 仅在本地win10,win11上实验通过（虽然理论上我感觉应该能在linux和Mac上运行）  
 
@@ -12,7 +13,6 @@
 
 ## Disclaimer
 本工具仅用于安全研究，提出一种edr监控浏览器文件后的绕过读取思路。 请勿使用于任何非法用途，严禁使用该项目对计算机信息系统进行攻击。由此产生的后果由使用者自行承担。
-
 
 
 ## Build
@@ -72,6 +72,11 @@ Global Flags:
 如下命令直接梭当前用户默认目录下的chrome密码，cookie和history
 ```shell
 ./HackBrowserDataManual.exe run
+```
+
+使用-b flag指定其他浏览器（目前只支持chrome和edge）
+```shell
+./HackBrowserDataManual.exe run -b edge
 ```
 
 如果梭不通或者出问题可以使用其下的的cookie，history和password三个子命令单独获取数据。如:

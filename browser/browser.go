@@ -109,7 +109,7 @@ func (b *Browser) RestoreBrowser() {
 	browserName := b.Util.findBinaryPath()
 	log.Infof("Restoring %s process", browserName)
 	log.Infof("found binary at %s", browserName)
-	cmd := exec.Command(browserName, " --restore-last-session")
+	cmd := exec.Command(browserName, "--restore-last-session")
 	err := cmd.Start()
 	if err != nil {
 		log.Errorf("Restore %s failed: %s", browserName, err)
